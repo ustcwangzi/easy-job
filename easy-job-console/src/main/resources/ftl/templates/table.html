@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<#include "/layout/header.html" />
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+    <header class="main-header">
+
+        <!-- Logo -->
+        <a class="logo">
+            <!-- mini logo for sidebar mini 50x50 pixels -->
+            <span class="logo-mini"><b>M</b></span>
+            <!-- logo for regular state and mobile devices -->
+            <span class="logo-lg">
+                <b onclick="javascript:window.location.href='/';" style="cursor:default;">Easy Job</b>
+            </span>
+        </a>
+
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top" role="navigation">
+            <!-- Sidebar toggle button-->
+            <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                <span class="sr-only">Toggle navigation</span>
+            </a>
+            <!-- Navbar Right Menu -->
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <!-- Messages: style can be found in dropdown.less-->
+                    <!-- User Account: style can be found in dropdown.less -->
+                    <li class="dropdown user user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img src="/AdminLTE/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+                            <span class="hidden-xs"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <!-- User image -->
+                            <li class="user-header">
+                                <img src="/AdminLTE/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                                <p>
+                                    admin
+                                </p>
+                            </li>
+                            <!-- Menu Footer-->
+                            <li class="user-footer">
+                                <div class="pull-right">
+                                    <a href="#" class="btn btn-default btn-flat">注销</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+
+        </nav>
+    </header>
+
+    <aside class="main-sidebar">
+        <section class="sidebar">
+
+            <ul class="sidebar-menu">
+                <li class="header">MAIN NAVIGATION</li>
+
+                <li class="treeview" id="menu-chick-manage-1">
+                    <a href="#">
+                        <i class="fa fa-pie-chart"></i>
+                        <span>调度任务</span>
+                        <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li id="menu-chick-list"><a href="/job/tablePage"><i class="fa fa-circle-o"></i>任务列表</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+        </section>
+    </aside>
+
+    <div class="content-wrapper">
+        <section class="content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h1 class="box-title"><strong>分布式调度任务列表</strong></h1>
+                        </div>
+
+                        <div class="box-body">
+                            <form class="form-horizontal" role="form">
+                                <div class="form-group ">
+                                    <label class="col-sm-2 control-label">任务名称：</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control" id="code" name="code" placeholder="请输入任务名称">
+                                    </div>
+
+                                    <div class="col-sm-1">
+                                        <a href="/job/createJobPage">
+                                            <button type="button" class="btn btn-primary">创建</button>
+                                        </a>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn btn-primary" onclick="search();">查询</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="box-body">
+                            <table id="table" class="table table-striped">
+                            </table>
+                        </div>
+
+                        <div class="modal fade" id="operateModal"  tabindex="-1" role="dialog" aria-labelledby="operateModalLabel">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content" id="opearteShowPanel">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title" id="operateModalLabel">最近五次任务执行情况</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="box-body table-responsive no-padding">
+                                            <table class="table table-hover" id="logTable"  >
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                $(function(){
+                    search();
+                })
+
+                function search() {
+                    $('#table').bootstrapTable('destroy').bootstrapTable({
+                        columns: [
+                            {
+                                field: 'jobId',
+                                hidden:true
+                            },
+                            {
+                                field: 'jobName',
+                                title: '任务名称',
+                                sortable: true
+                            },
+                            {
+                                field: 'cron',
+                                title: 'Cron表达式'
+                            },
+                            {
+                                field: 'selectMethod',
+                                title: '数据获取方法'
+                            },
+                            {
+                                field: 'executeMethod',
+                                title: '数据处理方法'
+                            },
+                            {
+                                field: 'jobType',
+                                title: '任务类型'
+                            },
+                            {
+                            field: 'operation',
+                            title: '操作',
+                            formatter:function(value,row,index){
+                                var v = '<a class = "view" href="javascript:void(0)">' + "查看" + '</a>';
+                                var r = '<a class = "log" href="javascript:void(0)" data-toggle="modal" data-target="#operateModal">执行历史</a>';
+                                var u = '<a class = "update" href="javascript:void(0)">' + "修改" + '</a>';
+                                var d = '<a class = "remove" href="javascript:void(0)">删除</a>';
+                                var s = '<a class = "start" href="javascript:void(0)">启动</a>';
+                                if(row.status == true){
+                                    s = '<a class = "stop" href="javascript:void(0)">关闭</a>';
+                                }
+                                return v + ' ' + r + ' ' + u + ' ' + d + ' ' + s;
+                            },
+                            events: 'operateEvents'
+                        }],
+                        sortName: 'jobId',
+                        pagination: true,
+                        sidePagination: 'server',
+                        pageNumber: 1,
+                        pageSize: 5,
+                        pageList: [5, 10, 20],
+                        queryParams: function (params) {
+                            return {
+                                pageSize: params.limit,
+                                offset: params.offset,
+                                jobName: $('#code').val()
+                            }
+                        },
+                        url: '/job/searchJob'
+                    });
+
+                    $('#table').bootstrapTable('hideColumn', 'jobId');
+                }
+
+                function showLog(jobId){
+                    $('#logTable').bootstrapTable('destroy').bootstrapTable({
+                        columns: [
+                            {
+                                field: 'logId',
+                                hidden:true
+                            },
+                            {
+                                field: 'executeDate',
+                                title: '执行时间',
+                                formatter:function(value,row,index){
+                                    return changeDateFormat(value)
+                                }
+                            },
+                            {
+                                field: 'executeResult',
+                                title: '执行结果'
+                            }
+                        ],
+                        sortName: 'executeDate',
+                        pagination: false,
+                        sidePagination: 'server',
+                        pageNumber: 1,
+                        pageSize: 5,
+                        queryParams: function (params) {
+                            return {
+                                jobId: jobId
+                            }
+                        },
+                        url: '/job/searchLog'
+                    }).bootstrapTable('hideColumn', 'logId');
+                }
+
+                function changeDateFormat(cellVal) {
+                    if (cellVal != null) {
+                        var date = new Date(parseInt(cellVal));
+                        var UnixTimeToDate = date.getFullYear() + '-' + dataLeftCompleting((date.getMonth() + 1)) + '-' + dataLeftCompleting(date.getDate())
+                            + ' ' + dataLeftCompleting(date.getHours()) + ':' + dataLeftCompleting(date.getMinutes()) + ':' + dataLeftCompleting(date.getSeconds());
+                        return UnixTimeToDate;
+                    }
+                }
+
+                function dataLeftCompleting(value){
+                    return parseInt(value) < 10 ? "0" + value : value;
+                }
+
+                window.operateEvents = {
+                    'click .view': function (e, value, row, index) {
+                        window.location.href="/job/viewJobPage?jobId="+row.jobId;
+                    },
+                    'click .log': function (e, value, row, index) {
+                        showLog(row.jobId);
+                    },
+                    'click .update': function (e, value, row, index) {
+                        window.location.href="/job/updateJobPage?jobId="+row.jobId;
+                    },
+                    'click .remove': function (e, value, row, index) {
+                        if(row.status == true){
+                            alert("任务为运行状态，不可删除");
+                            return;
+                        }
+                        $.ajax({
+                            type: "post",
+                            data: {"jobId": row.jobId},
+                            url: '/job/deleteJob',
+                            success: function (data) {
+                                console.log('删除成功');
+                                search();
+                            }
+                        });
+                    },
+                    'click .start': function (e, value, row, index) {
+                        $.ajax({
+                            type: "post",
+                            data: {"jobId": row.jobId, "jobType": row.jobType},
+                            url: '/job/startJob',
+                            success: function (data) {
+                                search();
+                            }
+                        });
+                    },
+                    'click .stop': function (e, value, row, index) {
+                        $.ajax({
+                            type: "post",
+                            data: {"jobId": row.jobId, "jobType": row.jobType},
+                            url: '/job/stopJob',
+                            success: function (data) {
+                                search();
+                            }
+                        });
+                    }
+                }
+
+            </script>
+
+        </section>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<#include "/layout/header.html" />
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+    <header class="main-header">
+
+        <!-- Logo -->
+        <a class="logo">
+            <!-- mini logo for sidebar mini 50x50 pixels -->
+            <span class="logo-mini"><b>M</b></span>
+            <!-- logo for regular state and mobile devices -->
+            <span class="logo-lg">
+                <b onclick="javascript:window.location.href='/';" style="cursor:default;">Easy Job</b>
+            </span>
+        </a>
+
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top" role="navigation">
+            <!-- Sidebar toggle button-->
+            <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                <span class="sr-only">Toggle navigation</span>
+            </a>
+            <!-- Navbar Right Menu -->
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <!-- Messages: style can be found in dropdown.less-->
+                    <!-- User Account: style can be found in dropdown.less -->
+                    <li class="dropdown user user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img src="/AdminLTE/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+                            <span class="hidden-xs"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <!-- User image -->
+                            <li class="user-header">
+                                <img src="/AdminLTE/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                                <p>
+                                    admin
+                                </p>
+                            </li>
+                            <!-- Menu Footer-->
+                            <li class="user-footer">
+                                <div class="pull-right">
+                                    <a href="#" class="btn btn-default btn-flat">注销</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+
+        </nav>
+    </header>
+
+    <aside class="main-sidebar">
+        <section class="sidebar">
+
+            <ul class="sidebar-menu">
+                <li class="header">MAIN NAVIGATION</li>
+
+                <li class="treeview" id="menu-chick-manage-1">
+                    <a href="#">
+                        <i class="fa fa-pie-chart"></i>
+                        <span>调度任务</span>
+                        <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li id="menu-chick-list"><a href="/job/tablePage"><i class="fa fa-circle-o"></i>任务列表</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+        </section>
+    </aside>
+
+    <div class="content-wrapper">
+        <section class="content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h1 class="box-title"><strong>创建调度任务</strong></h1>
+                        </div>
+                        <form class="form-horizontal" id="create_form">
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">任务参数</h3>
+                                </div>
+                                <div class="box-body">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">名称</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="jobName" id="jobName" placeholder="名称">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">描述</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="describes" id="describes" placeholder="描述">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Cron表达式</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="cron" id="cron" placeholder="Cron表达式">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">参数</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="params" id="params" placeholder="仅支持字符串">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <div style="float: left;width:17%;">
+                                        <h3 class="box-title" style="margin-top: 5px">任务类型</h3>
+                                    </div>
+                                    <div style="float: left;width: 15%;">
+                                        <select class="form-control" onchange="selectOnTypeChang(this)" name="jobType" id="jobType">
+                                            <option value="">请选择</option>
+                                            <option value="dubbo">Dubbo</option>
+                                            <option value="http">HTTP</option>
+                                            <option value="mq">MQ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="box-body panel-collapse collapse" id="write">
+                                    <div class="form-group" id="dubboAppProtocolDiv">
+                                        <label class="col-sm-2 control-label">Dubbo应用协议</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="dubboAppProtocol" id="dubboAppProtocol" placeholder="Dubbo应用协议">
+                                        </div>
+                                    </div>
+                                    <div class="form-group" id="dubboAppNameDiv">
+                                        <label class="col-sm-2 control-label">Dubbo应用名称</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="dubboAppName" id="dubboAppName" placeholder="Dubbo应用名称">
+                                        </div>
+                                    </div>
+                                    <div class="form-group" id="dubboAppVersionDiv">
+                                        <label class="col-sm-2 control-label">Dubbo应用版本</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="dubboAppVersion" id="dubboAppVersion" placeholder="Dubbo应用版本">
+                                        </div>
+                                    </div>
+                                    <div class="form-group" id="selectMethodDiv">
+                                        <label class="col-sm-2 control-label">获取数据方法</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="selectMethod" id="selectMethod" placeholder="获取数据方法">
+                                        </div>
+                                    </div>
+                                    <div class="form-group" id="executeMethodDiv">
+                                        <label class="col-sm-2 control-label">数据处理方法</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="executeMethod" id="executeMethod" placeholder="数据处理方法">
+                                        </div>
+                                    </div>
+                                    <div class="form-group" id="zkAddressDiv">
+                                        <label class="col-sm-2 control-label">zookeeper地址</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="zkAddress" id="zkAddress" placeholder="zookeeper://127.0.0.1:2181">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+                                <div class="box-footer">
+                                    <a href="/job/tablePage">
+                                        <button type="button" class="btn btn-info">返回</button>
+                                    </a>
+                                    <a href="javascript:void(0)">
+                                        <button id="submit" type="button" class="btn btn-info pull-right">提交</button>
+                                    </a>
+                                </div>
+                                <!-- /.box-footer -->
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                $(function(){
+                    $("#submit").click(function(){
+                        $.ajax({
+                            type: "POST",
+                            url:"/job/createJob",
+                            data:$('#create_form').serialize(),
+                            async: false,
+                            error: function(request) {
+                                alert("Create error");
+                            },
+                            success: function(data) {
+                               window.location.href="/job/tablePage";
+                            }
+                        });
+                    });
+                })
+
+                function selectOnTypeChang(obj){
+                    if($("#write").hasClass("in")){
+                        if(obj.selectedIndex==0){
+                            $("#write").removeClass("in")
+                        }
+                    }else{
+                        $("#write").addClass("in")
+                    }
+
+                    if(obj.selectedIndex==1){
+                        //选择Dubbo
+                        $("#selectMethodDiv").show();
+                        $("#executeMethodDiv").show();
+                        $("#zkAddressDiv").show();
+                        $("#dubboAppProtocolDiv").show();
+                        $("#dubboAppNameDiv").show();
+                        $("#dubboAppVersionDiv").show();
+                    }else if(obj.selectedIndex==2){
+                        //选择HTTP
+                        $("#selectMethodDiv").show();
+                        $("#executeMethodDiv").show();
+                        $("#zkAddressDiv").hide();
+                        $("#dubboAppProtocolDiv").hide();
+                        $("#dubboAppNameDiv").hide();
+                        $("#dubboAppVersionDiv").hide();
+                    }else if(obj.selectedIndex==3){
+                        //选择MQ
+                        $("#selectMethodDiv").show();
+                        $("#executeMethodDiv").hide();
+                        $("#zkAddressDiv").hide();
+                        $("#dubboAppProtocolDiv").hide();
+                        $("#dubboAppNameDiv").hide();
+                        $("#dubboAppVersionDiv").hide();
+                    }
+                }
+
+            </script>
+
+        </section>
+    </div>
+
+</div>
+
+</body>
+</html>

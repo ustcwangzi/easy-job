@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wz.job.common.mapper.JobLogMapper">
+    <resultMap id="BaseResultMap" type="com.wz.job.common.model.JobLog">
+        <id column="log_id" property="logId" jdbcType="INTEGER"/>
+        <result column="job_id" property="jobId" jdbcType="INTEGER"/>
+        <result column="execute_date" property="executeDate" jdbcType="TIMESTAMP"/>
+        <result column="execute_result" property="executeResult" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="BaseSql">
+        log_id, job_id, execute_date, execute_result
+    </sql>
+
+    <select id="queryLogsByJobId" resultMap="BaseResultMap">
+        select
+        <include refid="BaseSql"/>
+        from easy_job_log where job_id = #{jobId}
+    </select>
+
+    <insert id="insertLog" useGeneratedKeys="true" keyProperty="logId">
+        insert into easy_job_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            log_id,
+            <if test="jobId != null and jobId != ''">
+                job_id,
+            </if>
+            execute_date,
+            <if test="executeResult != null and executeResult != ''">
+                execute_result,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{logId},
+            <if test="jobId != null and jobId != ''">
+                #{jobId},
+            </if>
+            now(),
+            <if test="executeResult != null and executeResult != ''">
+                #{executeResult},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteLogByJobId">
+        delete from easy_job_log where job_id = #{jobId}
+    </delete>
+
+    <delete id="deleteLogByLogId">
+        delete from easy_job_log where log_id = #{logId}
+    </delete>
+
+    <update id="updateLog">
+        UPDATE easy_job_log
+        <set>
+            execute_date = now(),
+            <if test="executeResult != null and executeResult != ''">
+                execute_result = #{executeResult},
+            </if>
+        </set>
+        where log_id = #{logId}
+    </update>
+
+</mapper>

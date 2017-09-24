@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wz.job.common.mapper.JobTaskMapper">
+    <resultMap id="BaseResultMap" type="com.wz.job.common.model.JobTask">
+        <id column="job_id" property="jobId" jdbcType="INTEGER"/>
+        <result column="job_name" property="jobName" jdbcType="VARCHAR"/>
+        <result column="describes" property="describes" jdbcType="VARCHAR"/>
+        <result column="job_type" property="jobType" jdbcType="VARCHAR"/>
+        <result column="cron" property="cron" jdbcType="VARCHAR"/>
+        <result column="select_method" property="selectMethod" jdbcType="VARCHAR"/>
+        <result column="execute_method" property="executeMethod" jdbcType="VARCHAR"/>
+        <result column="params" property="params" jdbcType="VARCHAR"/>
+        <result column="zk_address" property="zkAddress" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="owner_id" property="ownerId" jdbcType="VARCHAR"/>
+        <result column="is_dispatch" property="isDispatch" jdbcType="CHAR"/>
+        <result column="dubbo_app_protocol" property="dubboAppProtocol" jdbcType="VARCHAR"/>
+        <result column="dubbo_app_name" property="dubboAppName" jdbcType="VARCHAR"/>
+        <result column="dubbo_app_version" property="dubboAppVersion" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="BaseSql">
+        job_id, job_name, describes, job_type, cron, select_method, execute_method, params, zk_address,
+        create_date, owner_id, is_dispatch, dubbo_app_protocol, dubbo_app_name, dubbo_app_version
+    </sql>
+
+    <select id="queryJobById" resultMap="BaseResultMap">
+        select
+        <include refid="BaseSql"/>
+        from easy_job_task where job_id = #{jobId}
+    </select>
+
+    <select id="queryJobs" resultMap="BaseResultMap">
+        select
+        <include refid="BaseSql"/>
+        from easy_job_task where 1 = 1
+        <if test="jobName !=null and jobName != ''">
+            and job_name like CONCAT('%',#{jobName},'%')
+        </if>
+        LIMIT ${offset}, ${pageSize}
+    </select>
+
+    <select id="queryJobCount" resultType="java.lang.Integer">
+        select count(1)
+        from easy_job_task where 1 = 1
+        <if test="jobName !=null and jobName != ''">
+            and job_name like CONCAT('%',#{jobName},'%')
+        </if>
+    </select>
+
+    <insert id="insertJob" useGeneratedKeys="true" keyProperty="jobId">
+        insert into easy_job_task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            job_id,
+            <if test="jobName != null and jobName != ''">
+                job_name,
+            </if>
+            <if test="describes != null and describes != ''">
+                describes,
+            </if>
+            <if test="jobType != null and jobType != ''">
+                job_type,
+            </if>
+            <if test="cron != null and cron != ''">
+                cron,
+            </if>
+            <if test="selectMethod != null and selectMethod != ''">
+                select_method,
+            </if>
+            <if test="executeMethod != null and executeMethod != ''">
+                execute_method,
+            </if>
+            <if test="params != null and params != ''">
+                params,
+            </if>
+            <if test="zkAddress != null and zkAddress != ''">
+                zk_address,
+            </if>
+            create_date,
+            <if test="ownerId != null and ownerId != ''">
+                owner_id,
+            </if>
+            <if test="isDispatch != null and isDispatch != ''">
+                is_dispatch,
+            </if>
+            <if test="dubboAppProtocol != null and dubboAppProtocol != ''">
+                dubbo_app_protocol,
+            </if>
+            <if test="dubboAppName != null and dubboAppName != ''">
+                dubbo_app_name,
+            </if>
+            <if test="dubboAppVersion != null and dubboAppVersion != ''">
+                dubbo_app_version,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{jobId},
+            <if test="jobName != null and jobName != ''">
+                #{jobName},
+            </if>
+            <if test="describes != null and describes != ''">
+                #{describes},
+            </if>
+            <if test="jobType != null and jobType != ''">
+                #{jobType},
+            </if>
+            <if test="cron != null and cron != ''">
+                #{cron},
+            </if>
+            <if test="selectMethod != null and selectMethod != ''">
+                #{selectMethod},
+            </if>
+            <if test="executeMethod != null and executeMethod != ''">
+                #{executeMethod},
+            </if>
+            <if test="params != null and params != ''">
+                #{params},
+            </if>
+            <if test="zkAddress != null and zkAddress != ''">
+                #{zkAddress},
+            </if>
+            now(),
+            <if test="ownerId != null and ownerId != ''">
+                #{ownerId},
+            </if>
+            <if test="isDispatch != null and isDispatch != ''">
+                #{isDispatch},
+            </if>
+            <if test="dubboAppProtocol != null and dubboAppProtocol != ''">
+                #{dubboAppProtocol},
+            </if>
+            <if test="dubboAppName != null and dubboAppName != ''">
+                #{dubboAppName},
+            </if>
+            <if test="dubboAppVersion != null and dubboAppVersion != ''">
+                #{dubboAppVersion},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteJob">
+        delete from easy_job_task where job_id = #{jobId}
+    </delete>
+
+    <update id="updateJob">
+        UPDATE easy_job_task
+        <set>
+            <if test="jobName != null and jobName != ''">
+                job_name = #{jobName},
+            </if>
+            <if test="describes != null and describes != ''">
+                describes = #{describes},
+            </if>
+            <if test="jobType != null and jobType != ''">
+                job_type = #{jobType},
+            </if>
+            <if test="cron != null and cron != ''">
+                cron = #{cron},
+            </if>
+            <if test="selectMethod != null and selectMethod != ''">
+                select_method = #{selectMethod},
+            </if>
+            <if test="executeMethod != null and executeMethod != ''">
+                execute_method = #{executeMethod},
+            </if>
+            <if test="params != null and params != ''">
+                params = #{params},
+            </if>
+            <if test="zkAddress != null and zkAddress != ''">
+                zk_address = #{zkAddress},
+            </if>
+            <if test="ownerId != null and ownerId != ''">
+                owner_id = #{ownerId},
+            </if>
+            <if test="isDispatch != null and isDispatch != ''">
+                is_dispatch = #{isDispatch},
+            </if>
+            <if test="dubboAppProtocol != null and dubboAppProtocol != ''">
+                dubbo_app_protocol = #{dubboAppProtocol},
+            </if>
+            <if test="dubboAppName != null and dubboAppName != ''">
+                dubbo_app_name = #{dubboAppName},
+            </if>
+            <if test="dubboAppVersion != null and dubboAppVersion != ''">
+                dubbo_app_version = #{dubboAppVersion},
+            </if>
+        </set>
+        where job_id = #{jobId}
+    </update>
+
+</mapper>

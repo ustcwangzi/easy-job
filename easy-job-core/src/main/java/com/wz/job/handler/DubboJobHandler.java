@@ -120,7 +120,7 @@ public class DubboJobHandler implements AbstractJobHandler, Job {
                 }
             }
             jobLog.setExecuteResult(result);
-
+            saveLog(mapper, jobLog, flag);
         } catch (Exception e) {
             log.error("execute job error {}", e.getMessage());
             jobLog.setExecuteResult(e.getMessage());

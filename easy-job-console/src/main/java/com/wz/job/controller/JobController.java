@@ -79,6 +79,12 @@ public class JobController {
 
     @RequestMapping("/createJob")
     public String create(JobTask job) {
+        if (StringUtils.isBlank(job.getDubboAppProtocol())){
+            job.setDubboAppProtocol(Constants.DEFAULT_DUBBOPROTOCOL);
+        }
+        if (StringUtils.isBlank(job.getZkAddress())){
+            job.setZkAddress(Constants.DEFAULT_ZKADDRESS);
+        }
         taskMapper.insertJob(job);
         zkClient.createPath(Constants.ROOT_PATH + "/" + job.getJobId(), Constants.STATUS_STOP + "_" + job.getJobType());
         return PREFIX + "/table";

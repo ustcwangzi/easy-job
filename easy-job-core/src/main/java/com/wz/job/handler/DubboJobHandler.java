@@ -83,7 +83,9 @@ public class DubboJobHandler implements AbstractJobHandler, Job {
         ReferenceConfig<GenericService> reference = new ReferenceConfig<>();
         reference.setApplication(new ApplicationConfig(task.getDubboAppName()));
         reference.setInterface(task.getSelectMethod().substring(0, task.getSelectMethod().lastIndexOf(".")));
-        reference.setVersion(task.getDubboAppVersion());
+        if (StringUtils.isNotBlank(task.getDubboAppVersion())){
+            reference.setVersion(task.getDubboAppVersion());
+        }
         reference.setProtocol(task.getDubboAppProtocol());
         reference.setRegistry(new RegistryConfig(task.getZkAddress()));
         reference.setGeneric(true);
@@ -107,20 +109,30 @@ public class DubboJobHandler implements AbstractJobHandler, Job {
                         List split = list.stream().skip(i * Constants.MAX_JOB_COUNT).limit(Constants.MAX_JOB_COUNT).collect(Collectors.toList());
                         result = String.valueOf(genericService.$invoke(task.getExecuteMethod().substring(task.getExecuteMethod().lastIndexOf(".") + 1),
                                 new String[]{List.class.getName()}, new Object[]{split}));
+                        jobLog.setExecuteResult(result);
+                        saveLog(mapper, jobLog, flag);
                     }
                 } else {
                     result = String.valueOf(genericService.$invoke(task.getExecuteMethod().substring(task.getExecuteMethod().lastIndexOf(".") + 1),
                             new String[]{List.class.getName()}, new Object[]{list}));
+                    jobLog.setExecuteResult(result);
+                    saveLog(mapper, jobLog, flag);
                 }
             }
             jobLog.setExecuteResult(result);
-            if (flag){
-                mapper.insertLog(jobLog);
-            }else {
-                mapper.updateLog(jobLog);
-            }
+
         } catch (Exception e) {
             log.error("execute job error {}", e.getMessage());
+            jobLog.setExecuteResult(e.getMessage());
+            saveLog(mapper, jobLog, flag);
+        }
+    }
+
+    private void saveLog(JobLogMapper mapper, JobLog jobLog, boolean saveFlag){
+        if (saveFlag){
+            mapper.insertLog(jobLog);
+        }else {
+            mapper.updateLog(jobLog);
         }
     }
 }

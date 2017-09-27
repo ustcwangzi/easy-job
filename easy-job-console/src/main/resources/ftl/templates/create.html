@@ -136,7 +136,7 @@
                                     <div class="form-group" id="dubboAppProtocolDiv">
                                         <label class="col-sm-2 control-label">Dubbo应用协议</label>
                                         <div class="col-sm-10">
-                                            <input type="text" class="form-control" name="dubboAppProtocol" id="dubboAppProtocol" placeholder="Dubbo应用协议">
+                                            <input type="text" class="form-control" name="dubboAppProtocol" id="dubboAppProtocol" placeholder="默认dubbo">
                                         </div>
                                     </div>
                                     <div class="form-group" id="dubboAppNameDiv">
@@ -166,7 +166,7 @@
                                     <div class="form-group" id="zkAddressDiv">
                                         <label class="col-sm-2 control-label">zookeeper地址</label>
                                         <div class="col-sm-10">
-                                            <input type="text" class="form-control" name="zkAddress" id="zkAddress" placeholder="zookeeper://127.0.0.1:2181">
+                                            <input type="text" class="form-control" name="zkAddress" id="zkAddress" placeholder="默认zookeeper://127.0.0.1:2181">
                                         </div>
                                     </div>
                                 </div>
@@ -190,6 +190,27 @@
             <script>
                 $(function(){
                     $("#submit").click(function(){
+                        if($('#jobName').val().trim() == "" || $('#describes').val().trim() == "" || $('#cron').val().trim() == ""){
+                            alert("请填写完整信息");
+                            return;
+                        }
+                        var type = $('#jobType').val();
+                        if(type == ""){
+                            alert("请选择任务类型");
+                            return;
+                        }else if(type == "dubbo"){
+                            if($('#dubboAppName').val().trim() == "" || $('#selectMethod').val().trim() == "" || $('#executeMethod').val().trim() == ""){
+                            alert("请填写完整信息");
+                            return;
+                        }else if(type == "http"){
+                            if($('#selectMethod').val().trim() == "" || $('#executeMethod').val().trim() == ""){
+                            alert("请填写完整信息");
+                            return;
+                        } else if(type == "mq"){
+                            if($('#selectMethod').val().trim() == ""){
+                            alert("请填写完整信息");
+                            return;
+                        }
                         $.ajax({
                             type: "POST",
                             url:"/job/createJob",

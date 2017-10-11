@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/order")
-public class OrderController {
+public class HttpController {
     @RequestMapping("/selectTasks")
     public List<Order> selectTasks(String str) {
         List<Order> list = new ArrayList<>();

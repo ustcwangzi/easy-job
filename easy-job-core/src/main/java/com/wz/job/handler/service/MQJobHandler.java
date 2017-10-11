@@ -22,12 +22,12 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * <p>处理http类型的任务</p>
+ * <p>处理MQ类型的任务</p>
  * Created by wangzi on 2017-10-11.
  */
 @Slf4j
-@JobHandlerService(Constants.TYPE_HTTP)
-public class HttpJobHandler implements AbstractJobHandler, Job {
+@JobHandlerService(Constants.TYPE_MQ)
+public class MQJobHandler implements AbstractJobHandler, Job {
     @Autowired
     private JobTaskMapper taskMapper;
     @Autowired
@@ -56,7 +56,7 @@ public class HttpJobHandler implements AbstractJobHandler, Job {
             jobUtils.stop();
         } else if (jobUtils != null && Constants.STATUS_START.equals(status)) {
             log.info("start job: {}", task.getJobName());
-            jobUtils.start(task, logMapper, HttpJobHandler.class);
+            jobUtils.start(task, logMapper, MQJobHandler.class);
         }
     }
 
@@ -84,21 +84,7 @@ public class HttpJobHandler implements AbstractJobHandler, Job {
         try {
             String response = HttpUtils.get(uri);
             if (StringUtils.isNotBlank(response)) {
-                JSONArray array = JSONArray.parseArray(response);
-                if (array.size() > Constants.MAX_JOB_COUNT) {
-                    int div = array.size() % Constants.MAX_JOB_COUNT;
-                    int round = div == 0 ? array.size() / Constants.MAX_JOB_COUNT : array.size() / Constants.MAX_JOB_COUNT + 1; //循环次数
-                    for (int i = 0; i < round; i++) {
-                        List list = array.subList(i * Constants.MAX_JOB_COUNT, (i + 1) * Constants.MAX_JOB_COUNT);
-                        result = HttpUtils.post(task.getExecuteMethod(), list.toString());
-                        jobLog.setExecuteResult(result);
-                        saveLog(mapper, jobLog, flag);
-                    }
-                } else {
-                    result = HttpUtils.post(task.getExecuteMethod(), response);
-                    jobLog.setExecuteResult(result);
-                    saveLog(mapper, jobLog, flag);
-                }
+                result = response;
             }
             jobLog.setExecuteResult(result);
             saveLog(mapper, jobLog, flag);

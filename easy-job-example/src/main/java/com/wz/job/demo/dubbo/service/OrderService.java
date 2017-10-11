@@ -1,5 +1,7 @@
 package com.wz.job.demo.dubbo.service;
 
+import com.wz.job.demo.bean.Order;
+
 import java.util.List;
 
 /**

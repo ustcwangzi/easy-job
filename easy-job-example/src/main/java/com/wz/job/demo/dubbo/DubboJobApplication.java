@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
+ * <p>dubbo应用demo</p>
  * Created by wangzi on 2017-09-19.
  */
 @SpringBootApplication

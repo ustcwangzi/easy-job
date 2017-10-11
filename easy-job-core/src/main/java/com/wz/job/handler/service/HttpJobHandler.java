@@ -1,15 +1,15 @@
-package com.wz.job.handler;
+package com.wz.job.handler.service;
 
-import com.alibaba.dubbo.config.ApplicationConfig;
-import com.alibaba.dubbo.config.ReferenceConfig;
-import com.alibaba.dubbo.config.RegistryConfig;
-import com.alibaba.dubbo.config.utils.ReferenceConfigCache;
-import com.alibaba.dubbo.rpc.service.GenericService;
+import com.alibaba.fastjson.JSONArray;
 import com.wz.job.common.mapper.JobLogMapper;
 import com.wz.job.common.mapper.JobTaskMapper;
 import com.wz.job.common.model.JobLog;
 import com.wz.job.common.model.JobTask;
 import com.wz.job.common.utils.Constants;
+import com.wz.job.common.utils.HttpUtils;
+import com.wz.job.handler.AbstractJobHandler;
+import com.wz.job.handler.JobHandlerService;
+import com.wz.job.handler.JobUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.Job;
@@ -18,18 +18,16 @@ import org.quartz.JobExecutionException;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * <p>处理Dubbo类型的任务</p>
- * Created by wangzi on 2017-09-22.
+ * Created by wangzi on 2017-10-11.
  */
 @Slf4j
-@JobHandlerService(Constants.TYPE_DUBBO)
-public class DubboJobHandler implements AbstractJobHandler, Job {
+@JobHandlerService(Constants.TYPE_HTTP)
+public class HttpJobHandler implements AbstractJobHandler, Job {
     @Autowired
     private JobTaskMapper taskMapper;
     @Autowired
@@ -49,7 +47,7 @@ public class DubboJobHandler implements AbstractJobHandler, Job {
             log.error("create schedule error:{}", e.getMessage());
         }
         JobTask task = taskMapper.queryJobById(Integer.parseInt(id));
-        if (task == null){
+        if (task == null) {
             log.error("Can not found job {}", path);
             return;
         }
@@ -58,7 +56,7 @@ public class DubboJobHandler implements AbstractJobHandler, Job {
             jobUtils.stop();
         } else if (jobUtils != null && Constants.STATUS_START.equals(status)) {
             log.info("start job: {}", task.getJobName());
-            jobUtils.start(task, logMapper, DubboJobHandler.class);
+            jobUtils.start(task, logMapper, HttpJobHandler.class);
         }
     }
 
@@ -69,51 +67,35 @@ public class DubboJobHandler implements AbstractJobHandler, Job {
         JobLogMapper mapper = (JobLogMapper) context.getJobDetail().getJobDataMap().get("mapper");
         JobLog jobLog = null;
         List<JobLog> logs = mapper.queryLogsByJobId(task.getJobId());
-        if (logs != null && logs.size() == Constants.DEFAULT_LOGSIZE){
+        if (logs != null && logs.size() == Constants.DEFAULT_LOGSIZE) {
             jobLog = Collections.min(logs);
         }
         boolean flag = false;
         String result = "no result";
-        if (jobLog == null){
+        if (jobLog == null) {
             flag = true;
             jobLog = new JobLog();
             jobLog.setJobId(task.getJobId());
         }
-        ReferenceConfig<GenericService> reference = new ReferenceConfig<>();
-        reference.setApplication(new ApplicationConfig(task.getDubboAppName()));
-        reference.setInterface(task.getSelectMethod().substring(0, task.getSelectMethod().lastIndexOf(".")));
-        if (StringUtils.isNotBlank(task.getDubboAppVersion())){
-            reference.setVersion(task.getDubboAppVersion());
+        String uri = task.getSelectMethod();
+        if (StringUtils.isNotBlank(task.getParams())) {
+            uri += "?str=" + task.getParams();
         }
-        reference.setProtocol(task.getDubboAppProtocol());
-        reference.setRegistry(new RegistryConfig(task.getZkAddress()));
-        reference.setGeneric(true);
-        ReferenceConfigCache cache = ReferenceConfigCache.getCache();
-        GenericService genericService = cache.get(reference);
         try {
-            Object datas;
-            if (StringUtils.isNotBlank(task.getParams())) {
-                datas = genericService.$invoke(task.getSelectMethod().substring(task.getSelectMethod().lastIndexOf(".") + 1),
-                        new String[]{"java.lang.String"}, new Object[]{task.getParams()});
-            } else {
-                datas = genericService.$invoke(task.getSelectMethod().substring(task.getSelectMethod().lastIndexOf(".") + 1),
-                        new String[]{}, new Object[]{});
-            }
-            List<Object> list = (ArrayList) datas;
-            if (datas != null && list.size() > 0) {
-                if (list.size() > Constants.MAX_JOB_COUNT) {
-                    int div = list.size() % Constants.MAX_JOB_COUNT;
-                    int round = div == 0 ? list.size() / Constants.MAX_JOB_COUNT : list.size() / Constants.MAX_JOB_COUNT + 1;
+            String response = HttpUtils.get(uri);
+            if (StringUtils.isNotBlank(response)) {
+                JSONArray array = JSONArray.parseArray(response);
+                if (array.size() > Constants.MAX_JOB_COUNT) {
+                    int div = array.size() % Constants.MAX_JOB_COUNT;
+                    int round = div == 0 ? array.size() / Constants.MAX_JOB_COUNT : array.size() / Constants.MAX_JOB_COUNT + 1; //循环次数
                     for (int i = 0; i < round; i++) {
-                        List split = list.stream().skip(i * Constants.MAX_JOB_COUNT).limit(Constants.MAX_JOB_COUNT).collect(Collectors.toList());
-                        result = String.valueOf(genericService.$invoke(task.getExecuteMethod().substring(task.getExecuteMethod().lastIndexOf(".") + 1),
-                                new String[]{List.class.getName()}, new Object[]{split}));
+                        List list = array.subList(i * Constants.MAX_JOB_COUNT, (i + 1) * Constants.MAX_JOB_COUNT);
+                        result = HttpUtils.post(task.getExecuteMethod(), list.toString());
                         jobLog.setExecuteResult(result);
                         saveLog(mapper, jobLog, flag);
                     }
                 } else {
-                    result = String.valueOf(genericService.$invoke(task.getExecuteMethod().substring(task.getExecuteMethod().lastIndexOf(".") + 1),
-                            new String[]{List.class.getName()}, new Object[]{list}));
+                    result = HttpUtils.post(task.getExecuteMethod(), response);
                     jobLog.setExecuteResult(result);
                     saveLog(mapper, jobLog, flag);
                 }
@@ -127,10 +109,10 @@ public class DubboJobHandler implements AbstractJobHandler, Job {
         }
     }
 
-    private void saveLog(JobLogMapper mapper, JobLog jobLog, boolean saveFlag){
-        if (saveFlag){
+    private void saveLog(JobLogMapper mapper, JobLog jobLog, boolean saveFlag) {
+        if (saveFlag) {
             mapper.insertLog(jobLog);
-        }else {
+        } else {
             mapper.updateLog(jobLog);
         }
     }

@@ -1,4 +1,4 @@
-package com.wz.job.demo.dubbo.service;
+package com.wz.job.demo.bean;
 
 import lombok.Data;
 
@@ -12,6 +12,9 @@ import java.io.Serializable;
 public class Order implements Serializable {
     private Integer id;
     private String detail;
+
+    public Order() {
+    }
 
     public Order(Integer id, String detail) {
         this.id = id;

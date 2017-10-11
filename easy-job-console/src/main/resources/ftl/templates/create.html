@@ -200,16 +200,19 @@
                             return;
                         }else if(type == "dubbo"){
                             if($('#dubboAppName').val().trim() == "" || $('#selectMethod').val().trim() == "" || $('#executeMethod').val().trim() == ""){
-                            alert("请填写完整信息");
-                            return;
+                                alert("请填写完整信息");
+                                return;
+                            }
                         }else if(type == "http"){
                             if($('#selectMethod').val().trim() == "" || $('#executeMethod').val().trim() == ""){
-                            alert("请填写完整信息");
-                            return;
+                                alert("请填写完整信息");
+                                return;
+                            }
                         } else if(type == "mq"){
                             if($('#selectMethod').val().trim() == ""){
-                            alert("请填写完整信息");
-                            return;
+                                alert("请填写完整信息");
+                                return;
+                            }
                         }
                         $.ajax({
                             type: "POST",

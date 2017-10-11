@@ -1,22 +1,23 @@
-package com.wz.job.demo.dubbo.service;
+package com.wz.job.demo.http;
 
-import com.alibaba.dubbo.config.annotation.Service;
 import com.wz.job.demo.bean.Order;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * <p>任务获取和执行</p>
- * Created by wangzi on 2017-09-19.
+ * Created by wangzi on 2017-10-11.
  */
 @Slf4j
-@Component
-@Service(version = "1.0.0")
-public class OrderServiceImpl implements OrderService {
-    @Override
+@RestController
+@RequestMapping("/order")
+public class OrderController {
+    @RequestMapping("/selectTasks")
     public List<Order> selectTasks(String str) {
         List<Order> list = new ArrayList<>();
         for (int i = 0; i < 10000; i++) {
@@ -25,8 +26,8 @@ public class OrderServiceImpl implements OrderService {
         return list;
     }
 
-    @Override
-    public boolean execute(List<Order> orders) {
+    @RequestMapping("/execute")
+    public boolean execute(@RequestBody List<Order> orders) {
         orders.forEach(order -> {
             log.info("处理订单：{}", order.getDetail());
         });

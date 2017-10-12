@@ -27,6 +27,6 @@ CREATE TABLE `easy_job_log` (
   `log_id` int(11) NOT NULL AUTO_INCREMENT,
   `job_id` int(11) NOT NULL,
   `execute_date` datetime DEFAULT NULL,
-  `execute_result` varchar(30) DEFAULT NULL,
+  `execute_result` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`log_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

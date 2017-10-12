@@ -10,15 +10,12 @@ import com.wz.job.common.mapper.JobTaskMapper;
 import com.wz.job.common.model.JobLog;
 import com.wz.job.common.model.JobTask;
 import com.wz.job.common.utils.Constants;
-import com.wz.job.handler.AbstractJobHandler;
 import com.wz.job.handler.JobHandlerService;
-import com.wz.job.handler.JobUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -32,38 +29,11 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @JobHandlerService(Constants.TYPE_DUBBO)
-public class DubboJobHandler implements AbstractJobHandler, Job {
+public class DubboJobHandler implements Job {
     @Autowired
     private JobTaskMapper taskMapper;
     @Autowired
     private JobLogMapper logMapper;
-
-    @Override
-    public void handleUpdate(String path, String status) {
-        log.info("handleUpdate path:{}, status:{}", path, status);
-        String id = path.substring(path.lastIndexOf("/") + 1);
-        if (StringUtils.isBlank(id)) {
-            return;
-        }
-        JobUtils jobUtils = null;
-        try {
-            jobUtils = new JobUtils(new StdSchedulerFactory().getScheduler());
-        } catch (Exception e) {
-            log.error("create schedule error:{}", e.getMessage());
-        }
-        JobTask task = taskMapper.queryJobById(Integer.parseInt(id));
-        if (task == null){
-            log.error("Can not found job {}", path);
-            return;
-        }
-        if (jobUtils != null && Constants.STATUS_STOP.equals(status)) {
-            log.info("stop job: {}", task.getJobName());
-            jobUtils.stop();
-        } else if (jobUtils != null && Constants.STATUS_START.equals(status)) {
-            log.info("start job: {}", task.getJobName());
-            jobUtils.start(task, logMapper, DubboJobHandler.class);
-        }
-    }
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -72,12 +42,12 @@ public class DubboJobHandler implements AbstractJobHandler, Job {
         JobLogMapper mapper = (JobLogMapper) context.getJobDetail().getJobDataMap().get("mapper");
         JobLog jobLog = null;
         List<JobLog> logs = mapper.queryLogsByJobId(task.getJobId());
-        if (logs != null && logs.size() == Constants.DEFAULT_LOGSIZE){
+        if (logs != null && logs.size() == Constants.DEFAULT_LOGSIZE) {
             jobLog = Collections.min(logs);
         }
         boolean flag = false;
         String result = "no result";
-        if (jobLog == null){
+        if (jobLog == null) {
             flag = true;
             jobLog = new JobLog();
             jobLog.setJobId(task.getJobId());
@@ -85,7 +55,7 @@ public class DubboJobHandler implements AbstractJobHandler, Job {
         ReferenceConfig<GenericService> reference = new ReferenceConfig<>();
         reference.setApplication(new ApplicationConfig(task.getDubboAppName()));
         reference.setInterface(task.getSelectMethod().substring(0, task.getSelectMethod().lastIndexOf(".")));
-        if (StringUtils.isNotBlank(task.getDubboAppVersion())){
+        if (StringUtils.isNotBlank(task.getDubboAppVersion())) {
             reference.setVersion(task.getDubboAppVersion());
         }
         reference.setProtocol(task.getDubboAppProtocol());
@@ -130,10 +100,10 @@ public class DubboJobHandler implements AbstractJobHandler, Job {
         }
     }
 
-    private void saveLog(JobLogMapper mapper, JobLog jobLog, boolean saveFlag){
-        if (saveFlag){
+    private void saveLog(JobLogMapper mapper, JobLog jobLog, boolean saveFlag) {
+        if (saveFlag) {
             mapper.insertLog(jobLog);
-        }else {
+        } else {
             mapper.updateLog(jobLog);
         }
     }

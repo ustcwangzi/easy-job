@@ -1,10 +1,10 @@
 package com.wz.job.handler;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,9 +15,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Service
 public class JobHandlerFactory implements BeanPostProcessor {
-    private Map<String, AbstractJobHandler> handlerMap = new ConcurrentHashMap<>();
+    private Map<String, Class> handlerMap = new ConcurrentHashMap<>();
 
-    public AbstractJobHandler getHandler(String type) {
+    public Class getHandler(String type) {
         return handlerMap.get(type);
     }
 
@@ -28,8 +28,8 @@ public class JobHandlerFactory implements BeanPostProcessor {
             return bean;
         }
         String type = handlerService.value();
-        if (!StringUtils.isEmpty(type)) {
-            handlerMap.put(type, (AbstractJobHandler) bean);
+        if (StringUtils.isNotBlank(type)) {
+            handlerMap.put(type, bean.getClass());
         }
         return bean;
     }

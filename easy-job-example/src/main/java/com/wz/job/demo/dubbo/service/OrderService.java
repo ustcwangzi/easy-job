@@ -6,12 +6,14 @@ import java.util.List;
 
 /**
  * <p>任务接口</p>
+ *
  * @author wangzi
  * Created by wangzi on 2017-09-19.
  */
 public interface OrderService {
     /**
      * 获取任务项
+     *
      * @param str
      * @return
      */
@@ -19,6 +21,7 @@ public interface OrderService {
 
     /**
      * 执行任务
+     *
      * @param orders
      * @return
      */

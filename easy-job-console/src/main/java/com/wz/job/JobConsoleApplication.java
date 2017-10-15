@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * <p>任务控制台</p>
+ * @author wangzi
  * Created by wangzi on 2017-09-24.
  */
 @SpringBootApplication

@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * <p>mq配置</p>
+ * @author wangzi
  * Created by wangzi on 2017-10-11.
  */
 @Data

@@ -5,6 +5,7 @@ import org.apache.curator.framework.recipes.cache.ChildData;
 
 /**
  * <p>节点变更默认处理方法</p>
+ * @author wangzi
  * Created by wangzi on 2017-09-21.
  */
 @Slf4j

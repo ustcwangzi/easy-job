@@ -6,6 +6,7 @@ import java.util.Date;
 
 /**
  * <p>任务实体</p>
+ * @author wangzi
  * Created by wangzi on 2017-09-20.
  */
 @Data

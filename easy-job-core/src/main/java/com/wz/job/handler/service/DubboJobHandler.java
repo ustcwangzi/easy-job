@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 /**
  * <p>处理Dubbo类型的任务</p>
+ * @author wangzi
  * Created by wangzi on 2017-09-22.
  */
 @Slf4j

@@ -16,6 +16,7 @@ import java.nio.charset.Charset;
 
 /**
  * <p>根据任务类型进行不同的处理</p>
+ * @author wangzi
  * Created by wangzi on 2017-09-22.
  */
 @Slf4j

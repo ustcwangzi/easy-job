@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * <p>生产消息</p>
+ * @author wangzi
  * Created by wangzi on 2017-10-11.
  */
 @Slf4j

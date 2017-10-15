@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * <p>dubbo配置</p>
+ * @author wangzi
  * Created by wangzi on 2017/4/21.
  */
 @Configuration

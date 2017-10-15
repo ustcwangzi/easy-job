@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * <p>http方式触发,也可以使用dubbo方式触发</p>
+ * <p>http方式触发mq消息发送</p>
+ * @author wangzi
  * Created by wangzi on 2017-10-11.
  */
 @RestController

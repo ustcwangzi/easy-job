@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * <p>http应用demo</p>
+ * @author wangzi
  * Created by wangzi on 2017-10-11.
  */
 @SpringBootApplication

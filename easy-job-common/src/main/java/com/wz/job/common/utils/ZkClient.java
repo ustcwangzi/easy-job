@@ -16,6 +16,7 @@ import java.nio.charset.Charset;
 
 /**
  * <p>封装zk的操作</p>
+ * @author wangzi
  * Created by wangzi on 2017-09-21.
  */
 @Slf4j

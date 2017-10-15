@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 
 /**
  * <p>druid连接池</p>
+ * @author wangzi
  * Created by wangzi on 2017/09/24.
  */
 @Configuration

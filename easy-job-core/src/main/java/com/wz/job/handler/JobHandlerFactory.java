@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <p>获取处理方法</p>
+ * @author wangzi
  * Created by wangzi on 2017-09-22.
  */
 @Service

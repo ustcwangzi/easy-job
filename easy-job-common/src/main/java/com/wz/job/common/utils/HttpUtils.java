@@ -16,6 +16,7 @@ import java.util.List;
 
 /**
  * <p>http工具类</p>
+ * @author wangzi
  * Created by wangzi on 2017-10-11.
  */
 @Slf4j

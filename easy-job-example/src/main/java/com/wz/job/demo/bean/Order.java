@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 /**
  * <p>任务实体</p>
+ * @author wangzi
  * Created by wangzi on 2017-09-19.
  */
 @Data

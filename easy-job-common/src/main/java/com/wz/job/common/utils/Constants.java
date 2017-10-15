@@ -2,6 +2,7 @@ package com.wz.job.common.utils;
 
 /**
  * <p>常量</p>
+ * @author wangzi
  * Created by wangzi on 2017-09-21.
  */
 public class Constants {

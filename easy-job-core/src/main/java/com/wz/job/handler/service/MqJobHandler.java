@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Slf4j
 @JobHandlerService(Constants.TYPE_MQ)
-public class MQJobHandler implements Job {
+public class MqJobHandler implements Job {
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {

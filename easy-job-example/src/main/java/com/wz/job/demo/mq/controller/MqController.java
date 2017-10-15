@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/order")
-public class MQController {
+public class MqController {
     @Autowired
     private ProducerMsg producer;
 

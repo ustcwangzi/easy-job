@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class ProducerMsg {
+    private static final int COUNT = 10000;
     @Autowired
     private DefaultMQProducer defaultMQProducer;
     @Value("${mq.topic}")
@@ -23,7 +24,7 @@ public class ProducerMsg {
 
     public void sendMsg(String str) {
         try {
-            for (int i = 0; i < 10000; i++) {
+            for (int i = 0; i < COUNT; i++) {
                 Message message = new Message(topic, tag, "MQ" + i, (str + i).getBytes());
                 defaultMQProducer.send(message);
             }

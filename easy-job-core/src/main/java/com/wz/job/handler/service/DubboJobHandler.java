@@ -76,7 +76,8 @@ public class DubboJobHandler implements Job {
             if (datas != null && list.size() > 0) {
                 if (list.size() > Constants.MAX_JOB_COUNT) {
                     int div = list.size() % Constants.MAX_JOB_COUNT;
-                    int round = div == 0 ? list.size() / Constants.MAX_JOB_COUNT : list.size() / Constants.MAX_JOB_COUNT + 1; //循环次数
+                    //循环次数
+                    int round = div == 0 ? list.size() / Constants.MAX_JOB_COUNT : list.size() / Constants.MAX_JOB_COUNT + 1;
                     for (int i = 0; i < round; i++) {
                         List split = list.stream().skip(i * Constants.MAX_JOB_COUNT).limit(Constants.MAX_JOB_COUNT).collect(Collectors.toList());
                         result = String.valueOf(genericService.$invoke(task.getExecuteMethod().substring(task.getExecuteMethod().lastIndexOf(".") + 1),

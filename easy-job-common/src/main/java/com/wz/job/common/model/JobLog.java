@@ -29,8 +29,12 @@ public class JobLog implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        if (this == o) return 0;
-        if (o == null || getClass() != o.getClass()) return -1;
+        if (this == o){
+            return 0;
+        }
+        if (o == null || getClass() != o.getClass()){
+            return -1;
+        }
 
         JobLog jobLog = (JobLog) o;
         return executeDate.compareTo(jobLog.executeDate);

@@ -8,13 +8,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Created by wangzi on 2017-10-11.
  */
 @SpringBootApplication
-public class MQJobApplication {
+public class MqJobApplication {
     public static void main(String[] args) {
-        SpringApplication.run(MQJobApplication.class, args);
-        synchronized (MQJobApplication.class){
+        SpringApplication.run(MqJobApplication.class, args);
+        synchronized (MqJobApplication.class){
             while (true){
                 try{
-                    MQJobApplication.class.wait();
+                    MqJobApplication.class.wait();
                 }catch (Throwable throwable){
                 }
             }

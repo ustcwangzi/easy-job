@@ -16,10 +16,12 @@ import java.util.List;
 @Component
 @Service(version = "1.0.0")
 public class OrderServiceImpl implements OrderService {
+    private static final int COUNT = 10000;
+
     @Override
     public List<Order> selectTasks(String str) {
         List<Order> list = new ArrayList<>();
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < COUNT; i++) {
             list.add(new Order(i, str + i));
         }
         return list;

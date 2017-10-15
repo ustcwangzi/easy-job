@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 @Configuration
 @ConfigurationProperties(prefix = "mq")
-public class MQConfiguration {
+public class MqConfiguration {
     private String producerGroup;
     private String instanceName;
     private String nameServerAddress;

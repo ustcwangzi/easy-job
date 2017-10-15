@@ -21,6 +21,7 @@ import java.nio.charset.Charset;
 @Slf4j
 @Component
 public class EventHandler extends AbstractEventHandler {
+    private static final int LENGTH = 2;
     @Autowired
     private JobHandlerFactory factory;
     @Autowired
@@ -46,8 +47,9 @@ public class EventHandler extends AbstractEventHandler {
         if (StringUtils.isBlank(data)) {
             return;
         }
-        String[] arr = data.split("_"); //status_type
-        if (arr.length == 2) {
+        //status_type
+        String[] arr = data.split(Constants.DATA_SPLIT);
+        if (arr.length == LENGTH) {
             String status = arr[0];
             log.info("handleUpdate path:{}, status:{}", path, status);
             String id = path.substring(path.lastIndexOf("/") + 1);

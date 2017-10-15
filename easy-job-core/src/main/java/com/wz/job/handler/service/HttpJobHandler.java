@@ -51,7 +51,8 @@ public class HttpJobHandler implements Job {
                 JSONArray array = JSONArray.parseArray(response);
                 if (array.size() > Constants.MAX_JOB_COUNT) {
                     int div = array.size() % Constants.MAX_JOB_COUNT;
-                    int round = div == 0 ? array.size() / Constants.MAX_JOB_COUNT : array.size() / Constants.MAX_JOB_COUNT + 1; //循环次数
+                    //循环次数
+                    int round = div == 0 ? array.size() / Constants.MAX_JOB_COUNT : array.size() / Constants.MAX_JOB_COUNT + 1;
                     for (int i = 0; i < round; i++) {
                         List list = array.subList(i * Constants.MAX_JOB_COUNT, (i + 1) * Constants.MAX_JOB_COUNT);
                         result = HttpUtils.post(task.getExecuteMethod(), list.toString());

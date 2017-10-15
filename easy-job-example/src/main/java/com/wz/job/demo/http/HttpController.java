@@ -17,10 +17,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/order")
 public class HttpController {
+    private static final int COUNT = 10000;
+
     @RequestMapping("/selectTasks")
     public List<Order> selectTasks(String str) {
         List<Order> list = new ArrayList<>();
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < COUNT; i++) {
             list.add(new Order(i, str + i));
         }
         return list;

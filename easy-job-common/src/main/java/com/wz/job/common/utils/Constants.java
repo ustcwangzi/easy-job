@@ -7,6 +7,7 @@ package com.wz.job.common.utils;
 public class Constants {
     public static final String ROOT_PATH = "/easy_job/jobs";
     public static final String LEADER_PATH = "/easy_job/leader";
+    public static final String DATA_SPLIT = "_";
     public static final String STATUS_START = "start";
     public static final String STATUS_STOP = "stop";
     public static final String TYPE_DUBBO = "dubbo";

@@ -52,12 +52,12 @@ public class JobController {
         if (list != null) {
             list.forEach(l -> {
                 String status = zkClient.getData(Constants.ROOT_PATH + "/" + l.getJobId());
-                if (StringUtils.isNotEmpty(status) && Constants.STATUS_START.equals(status.substring(0, status.indexOf("_")))) {
+                if (StringUtils.isNotEmpty(status) && Constants.STATUS_START.equals(status.substring(0, status.indexOf(Constants.DATA_SPLIT)))) {
                     l.setStatus(true);
                 }
             });
         }
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = new HashMap<String, Object>(2);
         result.put("rows", list);
         result.put("total", taskMapper.queryJobCount(jobName));
         return result;
@@ -66,7 +66,7 @@ public class JobController {
     @ResponseBody
     @RequestMapping("/searchLog")
     public Map<String, Object>  searchLog(Integer jobId) {
-        Map<String,Object> map = new HashMap<>();
+        Map<String,Object> map = new HashMap<>(1);
         List<JobLog> list = logMapper.queryLogsByJobId(jobId);
         map.put("rows",list);
         return map;

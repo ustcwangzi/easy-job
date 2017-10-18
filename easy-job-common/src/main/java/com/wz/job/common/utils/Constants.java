@@ -21,4 +21,5 @@ public class Constants {
     public static final Integer DEFAULT_LOGSIZE = 5;
     public static final String DEFAULT_DUBBOPROTOCOL = "dubbo";
     public static final String DEFAULT_ZKADDRESS = "zookeeper://127.0.0.1:2181";
+    public static final String LOG_SPLIT = "; ";
 }
